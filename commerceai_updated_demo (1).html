@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CommerceAI — Smart Store Assistant</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d30;--panel2:#17253b;--line:#263750;--text:#eef4ff;--muted:#9aabc2;--green:#35d39a;--blue:#6ca8ff;--red:#ff7272}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:var(--green);color:#062016;font-weight:700}
+button.secondary{background:#233650;color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:not-allowed}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}.side{background:#0e192a;border-right:1px solid var(--line);padding:24px 16px}.brand{font-size:21px;font-weight:800;margin:4px 8px 30px}.brand span{color:var(--green)}.nav button{display:block;width:100%;text-align:left;background:transparent;color:var(--muted);padding:12px;margin:4px 0;font-weight:600}.nav button.active,.nav button:hover{background:#1a2a41;color:var(--text)}.side-note{margin:32px 8px 0;color:var(--muted);font-size:12px}
+main{padding:28px;max-width:1400px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.top h1{font-size:26px;margin:0}.sub{color:var(--muted);margin-top:4px}.pill{border:1px solid #765e26;background:#332a16;color:#ffd777;padding:6px 10px;border-radius:99px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.metric{font-size:27px;font-weight:800;margin-top:8px}.muted{color:var(--muted)}.section{margin-top:20px}.section h2{font-size:18px;margin:0 0 12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.field label{color:var(--muted);font-size:13px}.field input,.field select,.field textarea{width:100%;background:#0c1727;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px}.field textarea{min-height:105px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.output{white-space:pre-wrap;background:#0c1727;border:1px solid var(--line);border-radius:10px;padding:14px;min-height:100px;color:#dce8f7}.hidden{display:none!important}.product{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.product:last-child{border:0}.tag{font-size:11px;border-radius:6px;background:#1d3b36;color:#7ce5bb;padding:4px 7px}.chatlog{height:260px;overflow:auto;background:#0c1727;border:1px solid var(--line);border-radius:10px;padding:12px}.msg{max-width:88%;padding:9px 12px;border-radius:12px;margin:8px 0;white-space:pre-wrap}.bot{background:#1b2b43}.user{background:#164333;margin-left:auto}.chatrow{display:flex;gap:8px;margin-top:10px}.chatrow input{flex:1;min-width:0;background:#0c1727;color:white;border:1px solid var(--line);border-radius:9px;padding:11px}.notice{font-size:12px;color:#ffd777;margin-top:12px}.table{width:100%;border-collapse:collapse}.table td,.table th{text-align:left;padding:11px;border-bottom:1px solid var(--line)}.table th{color:var(--muted);font-weight:600}
+@media(max-width:850px){.app{grid-template-columns:1fr}.side{padding:12px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin:4px 8px 10px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;width:auto}.side-note{display:none}main{padding:18px}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:450px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">Commerce<span>AI</span></div>
+  <nav class="nav">
+    <button class="active" data-page="dashboard">▦ Dashboard</button>
+    <button data-page="generator">✦ Description Generator</button>
+    <button data-page="support">◉ Customer Support</button>
+    <button data-page="products">▣ Products</button>
+    <button data-page="payments">⇄ Payments</button>
+  </nav>
+  <div class="side-note">CommerceAI Demo<br>Smart tools for small online stores</div>
+</aside>
+<main>
+  <div class="top">
+    <div><h1 id="pageTitle">Dashboard</h1><div class="sub">Your store overview and smart assistant workspace.</div></div>
+    <div class="pill">DEMO MODE · No real payments</div>
+  </div>
+
+  <section id="dashboard" class="page">
+    <div class="grid">
+      <div class="card"><div class="muted">Revenue</div><div class="metric" id="revenue">$0.00</div><div class="muted">Demo transactions only</div></div>
+      <div class="card"><div class="muted">Orders</div><div class="metric" id="orders">0</div><div class="muted">No live orders</div></div>
+      <div class="card"><div class="muted">Products</div><div class="metric" id="productCount">3</div><div class="muted">In your demo catalog</div></div>
+      <div class="card"><div class="muted">Cart items</div><div class="metric" id="cartCount">0</div><div class="muted">Local browser demo</div></div>
+    </div>
+    <div class="two section">
+      <div class="card"><h2>Quick actions</h2><p class="muted">Create better product content or test your support assistant.</p><div class="actions"><button onclick="showPage('generator')">Generate description</button><button class="secondary" onclick="showPage('support')">Try support chat</button></div></div>
+      <div class="card"><h2>Project status</h2><div class="product"><span>Store dashboard</span><span class="tag">Working</span></div><div class="product"><span>AI connection</span><span class="tag" style="background:#3b2b18;color:#ffd777">Demo logic</span></div><div class="product"><span>PayPal Sandbox</span><span class="tag" style="background:#3b2b18;color:#ffd777">Not connected</span></div><p class="notice">This prototype does not call an external AI service or process real payments.</p></div>
+    </div>
+    <div class="card section"><h2>Recent activity</h2><p class="muted" id="activity">Welcome! Your demo store is ready.</p></div>
+  </section>
+
+  <section id="generator" class="page hidden">
+    <div class="two">
+      <div class="card"><h2>Product Description Generator</h2><p class="muted">Create a draft using the built-in demo generator.</p>
+        <div class="field"><label>Product name</label><input id="pName" placeholder="e.g. Wireless headphones"></div>
+        <div class="field"><label>Product category</label><select id="pCategory"><option>Electronics</option><option>Fashion</option><option>Home & Living</option><option>Beauty</option><option>Sports</option><option>Other</option></select></div>
+        <div class="field"><label>Key features</label><textarea id="pFeatures" placeholder="e.g. Bluetooth, long battery life, lightweight"></textarea></div>
+        <div class="field"><label>Tone</label><select id="pTone"><option>Professional</option><option>Friendly</option><option>Persuasive</option></select></div>
+        <button onclick="generateDescription()">Generate draft</button>
+      </div>
+      <div class="card"><h2>Generated description</h2><div class="output" id="descriptionOutput">Your product description will appear here.</div><div class="actions"><button class="secondary" onclick="copyOutput('descriptionOutput')">Copy text</button><button class="secondary" onclick="saveGeneratedProduct()">Save as product</button></div><p class="notice">Demo generator: output is created from templates, not a live AI model.</p></div>
+    </div>
+  </section>
+
+  <section id="support" class="page hidden">
+    <div class="two">
+      <div class="card"><h2>Customer Support Assistant</h2><p class="muted">Try sample customer questions.</p>
+        <div class="chatlog" id="chatlog"><div class="msg bot">Hello! Welcome to CommerceAI demo support. How can I help you today?</div></div>
+        <div class="chatrow"><input id="chatInput" placeholder="Type a customer question..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div>
+        <p class="notice">Demo chatbot with sample replies. Connect an AI API through a secure backend for real AI responses.</p>
+      </div>
+      <div class="card"><h2>Test questions</h2><div class="actions"><button class="secondary" onclick="askSample('Where is my order?')">Order status</button><button class="secondary" onclick="askSample('What is your return policy?')">Returns</button><button class="secondary" onclick="askSample('How can I pay?')">Payment</button></div></div>
+    </div>
+  </section>
+
+  <section id="products" class="page hidden">
+    <div class="card"><div class="top"><div><h2>Product catalog</h2><p class="muted">Manage sample products in this browser session.</p></div><button onclick="showPage('generator')">+ Create product</button></div>
+      <div id="productList"></div>
+    </div>
+  </section>
+
+  <section id="payments" class="page hidden">
+    <div class="two">
+      <div class="card"><h2>PayPal Sandbox setup</h2><p class="muted">This screen explains the next integration step. No payment is currently processed.</p>
+        <div class="field"><label>Sandbox Client ID</label><input placeholder="Add only after secure integration is prepared" disabled></div>
+        <button disabled>Connect PayPal Sandbox</button>
+        <p class="notice">Never paste a secret key into this HTML file. A real PayPal integration needs a backend server to create and capture orders securely.</p>
+      </div>
+      <div class="card"><h2>Demo checkout</h2><p class="muted">Use this button to simulate the checkout flow for presentation purposes.</p><div class="metric">$29.99</div><p>Sample order · Demo product</p><button onclick="demoCheckout()">Simulate demo checkout</button><p id="paymentResult" class="notice"></p></div>
+    </div>
+  </section>
+</main>
+</div>
+<script>
+const products=[
+ {name:"Wireless Headphones",category:"Electronics",price:49.99,description:"Comfortable wireless sound for everyday use."},
+ {name:"Classic Backpack",category:"Fashion",price:34.50,description:"A practical backpack for work, study and travel."},
+ {name:"Desk Lamp",category:"Home & Living",price:22.00,description:"A clean, modern lamp for your workspace."}
+];
+let cart=0,orders=0,revenue=0,lastDescription="";
+function showPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));document.getElementById(page).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));document.getElementById('pageTitle').textContent=({dashboard:'Dashboard',generator:'Description Generator',support:'Customer Support',products:'Products',payments:'Payments'})[page];if(page==='products')renderProducts();}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function generateDescription(){const name=document.getElementById('pName').value.trim();const cat=document.getElementById('pCategory').value;const features=document.getElementById('pFeatures').value.trim();const tone=document.getElementById('pTone').value;if(!name){alert('Please enter a product name.');return;}const intro=tone==='Friendly'?'Meet your new favourite: ':tone==='Persuasive'?'Upgrade your experience with ':'Introducing ';const benefit=features?`Designed with ${features}, this ${cat.toLowerCase()} product brings together convenience and value.`:`A practical ${cat.toLowerCase()} choice designed to make everyday life easier.`;lastDescription=`${intro}${name}.\n\n${benefit}\n\nWhy you’ll love it:\n• Thoughtful design for everyday use\n• Easy to add to your daily routine\n• A smart choice for quality and convenience\n\nDiscover ${name} today.`;document.getElementById('descriptionOutput').textContent=lastDescription;document.getElementById('activity').textContent='Generated a product description draft for '+name+'.';}
+function copyOutput(id){const text=document.getElementById(id).textContent;navigator.clipboard?.writeText(text).then(()=>alert('Copied!')).catch(()=>alert('Select and copy the text manually.'));}
+function saveGeneratedProduct(){const name=document.getElementById('pName').value.trim();if(!name||!lastDescription){alert('Generate a description first.');return;}products.push({name,category:document.getElementById('pCategory').value,price:0,description:lastDescription});updateStats();alert('Product added to your demo catalog.');}
+function renderProducts(){document.getElementById('productList').innerHTML=products.map((p,i)=>`<div class="product"><div><strong>${escapeHtml(p.name)}</strong><div class="muted">${escapeHtml(p.category)} · ${escapeHtml(p.description.slice(0,90))}</div></div><div><strong>$${p.price.toFixed(2)}</strong> <button class="secondary" onclick="addToCart(${i})">Add to cart</button></div></div>`).join('');}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function addToCart(i){cart++;updateStats();document.getElementById('activity').textContent='Added '+products[i].name+' to the demo cart.';}
+function updateStats(){document.getElementById('productCount').textContent=products.length;document.getElementById('cartCount').textContent=cart;document.getElementById('orders').textContent=orders;document.getElementById('revenue').textContent='$'+revenue.toFixed(2);}
+function sendChat(){const input=document.getElementById('chatInput');const q=input.value.trim();if(!q)return;addMessage(q,'user');input.value='';const t=q.toLowerCase();let a='Thanks for contacting us! A support team member can help you with that. This is a demo response.';if(t.includes('order')||t.includes('track'))a='You can check your order status using the tracking link in your confirmation email. This demo does not have access to real orders.';else if(t.includes('return')||t.includes('refund'))a='Our sample return policy allows customers to request a return within 30 days, subject to product condition. Please confirm the real store policy before publishing.';else if(t.includes('pay')||t.includes('payment'))a='This demo shows a simulated checkout. A real store can offer PayPal after PayPal Sandbox integration and testing.';else if(t.includes('hello')||t.includes('hi'))a='Hello! I can answer sample questions about orders, returns and payments.';setTimeout(()=>addMessage(a,'bot'),250);}
+function addMessage(text,who){const el=document.createElement('div');el.className='msg '+who;el.textContent=text;const log=document.getElementById('chatlog');log.appendChild(el);log.scrollTop=log.scrollHeight;}
+function askSample(q){document.getElementById('chatInput').value=q;sendChat();}
+function demoCheckout(){if(cart===0){document.getElementById('paymentResult').textContent='Add a product to your cart first, or treat this as a sample checkout preview.';return;}orders++;revenue+=29.99;cart=0;updateStats();document.getElementById('paymentResult').textContent='Demo checkout completed locally. No money was charged and no PayPal transaction was created.';document.getElementById('activity').textContent='A simulated demo order was completed.';}
+updateStats();renderProducts();
+</script>
+</body>
+</html>
